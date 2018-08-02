@@ -59,7 +59,7 @@ static uint8_t maria_wmode;
 // ----------------------------------------------------------------------------
 static inline void maria_StoreCell2(uint8_t data)
 {
-   if(maria_horizontal < MARIA_LINERAM_SIZE)
+   if(RenderFlag && maria_horizontal < MARIA_LINERAM_SIZE)
    {
       if(data)
          maria_lineRAM[maria_horizontal] = maria_palette | data;
@@ -79,7 +79,7 @@ static inline void maria_StoreCell2(uint8_t data)
 // ----------------------------------------------------------------------------
 static inline void maria_StoreCell(uint8_t high, uint8_t low)
 {
-  if(maria_horizontal < MARIA_LINERAM_SIZE)
+  if(RenderFlag && maria_horizontal < MARIA_LINERAM_SIZE)
   {
     if(low || high)
       maria_lineRAM[maria_horizontal] = (maria_palette & 16) | high | low;
@@ -224,6 +224,8 @@ static inline void maria_WriteLineRAM(uint8_t* buffer)
 // ----------------------------------------------------------------------------
 static inline void maria_StoreLineRAM(void)
 {
+    if (!RenderFlag) return;
+    
    int index;
    uint8_t mode;
 
