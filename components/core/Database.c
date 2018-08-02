@@ -5,7 +5,7 @@
 //
 // ----------------------------------------------------------------------------
 // Copyright 2005 Greg Stanton
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -48,7 +48,7 @@ typedef struct cartridge_db
    uint8_t hblank;
 } cartridge_db_t;
 
-static const struct cartridge_db db_list[] = 
+static const struct cartridge_db db_list[] =
 {
    {
       "4332c24e4f3bc72e7fe1b77adf66c2b7",  /* digest */
@@ -139,7 +139,7 @@ static const struct cartridge_db db_list[] =
       0,
       0,
       0,
-      0 
+      0
    },
    {
       "8fc3a695eaea3984912d98ed4a543376",
@@ -209,7 +209,7 @@ static const struct cartridge_db db_list[] =
    {
       "fba002089fcfa176454ab507e0eb76cb",
       "Basketbrawl",
-      4, 
+      4,
       false,
       1,
       1,

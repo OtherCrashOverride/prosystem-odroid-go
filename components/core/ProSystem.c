@@ -5,7 +5,7 @@
 //
 // ----------------------------------------------------------------------------
 // Copyright 2003, 2004 Greg Stanton
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -230,7 +230,7 @@ bool prosystem_Load(const char *buffer)
 
       for(index = 0; index < 16384; index++)
          memory_ram[16384 + index] = buffer[offset + index];
-      offset += 16384; 
+      offset += 16384;
    }
 
    return true;

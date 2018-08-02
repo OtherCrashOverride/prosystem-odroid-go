@@ -5,7 +5,7 @@
 //
 // ----------------------------------------------------------------------------
 // Copyright 2005 Greg Stanton
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -51,7 +51,7 @@ static uint32_t hash_Step2(uint32_t w, uint32_t x, uint32_t y, uint32_t z, uint3
 // Step3
 // ----------------------------------------------------------------------------
 static uint32_t hash_Step3(uint32_t w, uint32_t x, uint32_t y, uint32_t z, uint32_t data, uint32_t s) {
-  w += (x ^ y ^ z) + data;  
+  w += (x ^ y ^ z) + data;
   w = w << s | w >> (32 - s);
   w += x;
   return w;
@@ -61,11 +61,11 @@ static uint32_t hash_Step3(uint32_t w, uint32_t x, uint32_t y, uint32_t z, uint3
 // Step4
 // ----------------------------------------------------------------------------
 static uint32_t hash_Step4(uint32_t w, uint32_t x, uint32_t y, uint32_t z, uint32_t data, uint32_t s) {
-  w += (y ^ (x | ~z)) + data;  
+  w += (y ^ (x | ~z)) + data;
   w = w << s | w >> (32 - s);
   w += x;
   return w;
-}    
+}
 
 static uint32_t end_to_le32(uint32_t n)
 {
@@ -235,7 +235,7 @@ void hash_Compute(char *s, const uint8_t* source, uint32_t length)
 
       for(index = 0; index < 56; index++)
          buffer3[index] = 0;
-   } 
+   }
    else
    {
       for(index = 0; index < count - 8; index++)

@@ -44,10 +44,10 @@ QueueHandle_t vidQueue;
 
 #define VIDEO_WIDTH 320
 #define VIDEO_HEIGHT 292
-uint16_t* framebuffer;
+uint8_t* framebuffer; //[320 * 240];
 static int videoWidth  = 320;
 static int videoHeight = 240;
-static uint16_t display_palette16[256] = {0};
+static uint16_t* display_palette16; //[256] = {0};
 static uint8_t keyboard_data[17] = {0};
 
 static int16_t* sampleBuffer;
@@ -62,9 +62,10 @@ void videoTask(void *arg)
         // if (param == (uint16_t*)1)
         //     break;
 
-        ili9341_write_frame_rectangleLE(0, 0, 320, 240, framebuffer);
+        //ili9341_write_frame_rectangleLE(0, 0, 320, 240, framebuffer);
+
         //memcpy(framebuffer, param, sizeof(framebuffer));
-        //ili9341_write_frame_atari2600(framebuffer, pal16, IsPal);
+        ili9341_write_frame_atari7800(framebuffer, display_palette16);
 
         xQueueReceive(vidQueue, &param, portMAX_DELAY);
 
@@ -564,6 +565,9 @@ static void display_ResetPalette16(void)
 {
     unsigned index;
 
+    display_palette16 = malloc(3 * 256);
+    if (!display_palette16) abort();
+
 #if 1
     uint8_t* paldata = palette_data;
 #else
@@ -594,7 +598,7 @@ static void display_ResetPalette16(void)
 
 void emu_init(const char* filename)
 {
-    framebuffer = heap_caps_malloc(VIDEO_WIDTH * VIDEO_HEIGHT * 2, MALLOC_CAP_SPIRAM);
+    framebuffer = malloc(320 * 240); // heap_caps_malloc(VIDEO_WIDTH * VIDEO_HEIGHT * 2, MALLOC_CAP_SPIRAM);
     if (!framebuffer) abort();
 
     memset(keyboard_data, 0, sizeof(keyboard_data));
@@ -624,7 +628,9 @@ void emu_init(const char* filename)
 
     fclose(fp); fp = NULL;
 
+    odroid_sdcard_close();
 
+    
     if (!cartridge_Load((const uint8_t*)data, size))
     {
         abort();
@@ -653,23 +659,23 @@ void emu_step(odroid_gamepad_state* gamepad)
 
 
     // Video
-    videoWidth  = Rect_GetLength(&maria_visibleArea);
-    videoHeight = Rect_GetHeight(&maria_visibleArea);
+    // videoWidth  = Rect_GetLength(&maria_visibleArea);
+    // videoHeight = Rect_GetHeight(&maria_visibleArea);
     const uint8_t* buffer = maria_surface + ((maria_visibleArea.top - maria_displayArea.top) * Rect_GetLength(&maria_visibleArea));
-    uint16_t* surface = framebuffer;
-    int pitch = 320;
-
-    for(int y = 0; y < videoHeight; y++)
-    {
-        for(int x = 0; x < videoWidth; ++x)
-        {
-            surface[x] = display_palette16[buffer[x]];
-        }
-
-        surface += pitch;
-        buffer  += videoWidth;
-    }
-
+    // uint16_t* surface = framebuffer;
+    // int pitch = 320;
+    //
+    // for(int y = 0; y < videoHeight; y++)
+    // {
+    //     for(int x = 0; x < videoWidth; ++x)
+    //     {
+    //         surface[x] = display_palette16[buffer[x]];
+    //     }
+    //
+    //     surface += pitch;
+    //     buffer  += videoWidth;
+    // }
+    memcpy(framebuffer, buffer, 320 * 240);
     //odroid_audio_submit((int16_t*)sampleBuffer, tiaSamplesPerFrame);
 }
 

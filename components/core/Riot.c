@@ -1,3 +1,4 @@
+#pragma GCC optimize ("O3")
 // ----------------------------------------------------------------------------
 //   ___  ___  ___  ___       ___  ____  ___  _  _
 //  /__/ /__/ /  / /__  /__/ /__    /   /_   / |/ /
@@ -5,7 +6,7 @@
 //
 // ----------------------------------------------------------------------------
 // Copyright 2005 Greg Stanton
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -45,7 +46,7 @@ void riot_Reset(void)
 // ----------------------------------------------------------------------------
 // SetInput
 // +----------+--------------+-------------------------------------------------
-// | Offset   | Controller   | Control                                                   
+// | Offset   | Controller   | Control
 // +----------+--------------+-------------------------------------------------
 // | 00       | Joystick 1   | Right
 // | 01       | Joystick 1   | Left

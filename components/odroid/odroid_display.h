@@ -39,3 +39,4 @@ void odroid_display_unlock_sms_display();
 
 void ili9341_write_frame_lnx(uint16_t* buffer);
 void ili9341_write_frame_atari2600(uint8_t* buffer, uint16_t* palette, uint8_t isPal);
+void ili9341_write_frame_atari7800(uint8_t* buffer, uint16_t* palette);

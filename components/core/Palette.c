@@ -25,9 +25,15 @@
 #include <stdio.h>
 #include <string.h>
 #include "Palette.h"
+
+#include <esp_heap_caps.h>
+
 #define PALETTE_SOURCE "Palette.c"
 
 bool palette_default = true;
+#if 1
+uint8_t* palette_data;
+#else
 const uint8_t palette_data[PALETTE_SIZE] = {
 0x00,0x00,0x00,0x14,0x14,0x14,0x29,0x29,0x29,0x3D,0x3D,0x3D,
 0x52,0x52,0x52,0x66,0x66,0x66,0x7A,0x7A,0x7A,0x8F,0x8F,0x8F,
@@ -94,13 +100,20 @@ const uint8_t palette_data[PALETTE_SIZE] = {
 0xD4,0xA3,0x22,0xE8,0xB8,0x37,0xFD,0xCC,0x4B,0xFF,0xE1,0x60,
 0xFF,0xF5,0x74,0xFF,0xFF,0x88,0xFF,0xFF,0x9D,0xFF,0xFF,0xB1
 };
+#endif
 
 // ----------------------------------------------------------------------------
 // Load
 // ----------------------------------------------------------------------------
 void palette_Load(const uint8_t* data)
 {
-   // int index;
-   // for(index = 0; index < PALETTE_SIZE; index++)
-   //    palette_data[index] = data[index];
+    if (!palette_data)
+    {
+        palette_data = heap_caps_malloc(PALETTE_SIZE, MALLOC_CAP_SPIRAM);
+        if (!palette_data) abort();
+    }
+
+   int index;
+   for(index = 0; index < PALETTE_SIZE; index++)
+      palette_data[index] = data[index];
 }

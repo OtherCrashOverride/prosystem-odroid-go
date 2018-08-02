@@ -5,7 +5,7 @@
 //
 // ----------------------------------------------------------------------------
 // Copyright 2005 Greg Stanton
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -31,16 +31,16 @@
 extern "C" {
 #endif
 
-union Pair 
+union Pair
 {
    uint16_t w;
    struct Join
    {
 #ifdef MSB_FIRST
-      uint8_t h; 
+      uint8_t h;
       uint8_t l;
 #else
-      uint8_t l; 
+      uint8_t l;
       uint8_t h;
 #endif
    } b;

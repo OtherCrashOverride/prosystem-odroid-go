@@ -31,7 +31,7 @@
 
 #include <esp_heap_caps.h>
 
-uint8_t* memory_ram; //[MEMORY_SIZE] = {0};
+uint8_t memory_ram[MEMORY_SIZE] = {0};
 uint8_t* memory_rom; //[MEMORY_SIZE] = {0};
 
 // ----------------------------------------------------------------------------
@@ -39,10 +39,11 @@ uint8_t* memory_rom; //[MEMORY_SIZE] = {0};
 // ----------------------------------------------------------------------------
 void memory_Reset(void)
 {
-    if (!memory_ram)
+    if (!memory_rom)
     {
-        memory_ram = heap_caps_malloc(MEMORY_SIZE, MALLOC_CAP_SPIRAM);
-        if (!memory_ram) abort();
+        //memory_ram = heap_caps_malloc(MEMORY_SIZE, MALLOC_CAP_SPIRAM);
+        // memory_ram = malloc(MEMORY_SIZE);
+        // if (!memory_ram) abort();
 
         memory_rom = heap_caps_malloc(MEMORY_SIZE, MALLOC_CAP_SPIRAM);
         if (!memory_rom) abort();

@@ -5,7 +5,7 @@
 //
 // ----------------------------------------------------------------------------
 // Copyright 2005 Greg Stanton
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -196,7 +196,7 @@ void region_Reset(void)
       prosystem_scanlines = REGION_SCANLINES_PAL;
       tia_size = 624;
       pokey_size = 624;
-   }  
+   }
    else
    {
       maria_displayArea = REGION_DISPLAY_AREA_NTSC;

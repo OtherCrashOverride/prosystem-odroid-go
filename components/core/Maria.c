@@ -1,3 +1,4 @@
+#pragma GCC optimize ("O3")
 // ----------------------------------------------------------------------------
 //   ___  ___  ___  ___       ___  ____  ___  _  _
 //  /__/ /__/ /  / /__  /__/ /__    /   /_   / |/ /
@@ -29,6 +30,8 @@
 #include "Sally.h"
 
 #include <stdbool.h>
+
+extern bool RenderFlag;
 
 #define MARIA_LINERAM_SIZE 160
 
@@ -157,6 +160,8 @@ static void maria_StoreGraphic(void)
 // ----------------------------------------------------------------------------
 static void maria_WriteLineRAM(uint8_t* buffer)
 {
+    if (!RenderFlag) return;
+
    uint8_t rmode = memory_ram[CTRL] & 3;
 
    if(rmode == 0)

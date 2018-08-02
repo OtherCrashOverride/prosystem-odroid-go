@@ -1,3 +1,4 @@
+#pragma GCC optimize ("O3")
 // ----------------------------------------------------------------------------
 //   ___  ___  ___  ___       ___  ____  ___  _  _
 //  /__/ /__/ /  / /__  /__/ /__    /   /_   / |/ /
@@ -79,8 +80,8 @@ static uint8_t pokey_audc[4];
 static uint8_t pokey_audctl;
 static uint8_t pokey_output[4];
 static uint8_t pokey_outVol[4];
-static uint8_t pokey_poly04[POKEY_POLY4_SIZE] = {1,1,0,1,1,1,0,0,0,0,1,0,1,0,0};
-static uint8_t pokey_poly05[POKEY_POLY5_SIZE] = {0,0,1,1,0,0,0,1,1,1,1,0,0,1,0,1,0,1,1,0,1,1,1,0,1,0,0,0,0,0,1};
+static const uint8_t pokey_poly04[POKEY_POLY4_SIZE] = {1,1,0,1,1,1,0,0,0,0,1,0,1,0,0};
+static const uint8_t pokey_poly05[POKEY_POLY5_SIZE] = {0,0,1,1,0,0,0,1,1,1,1,0,0,1,0,1,0,1,1,0,1,1,1,0,1,0,0,0,0,0,1};
 static uint8_t* pokey_poly17; //[POKEY_POLY17_SIZE];
 static uint32_t pokey_poly17Size;
 static uint32_t pokey_polyAdjust;

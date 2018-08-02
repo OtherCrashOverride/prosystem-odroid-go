@@ -5,7 +5,7 @@
 //
 // ----------------------------------------------------------------------------
 // Copyright 2005 Greg Stanton
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -71,7 +71,7 @@
 #define P7C2        62
 #define P7C3        63
 #define SWCHA       640
-#define CTLSWA      641 
+#define CTLSWA      641
 #define SWCHB       642
 #define CTLSWB      643
 #define INTIM       644
