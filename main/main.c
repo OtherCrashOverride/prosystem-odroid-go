@@ -630,7 +630,7 @@ void emu_init(const char* filename)
 
     odroid_sdcard_close();
 
-    
+
     if (!cartridge_Load((const uint8_t*)data, size))
     {
         abort();
@@ -661,7 +661,7 @@ void emu_step(odroid_gamepad_state* gamepad)
     // Video
     // videoWidth  = Rect_GetLength(&maria_visibleArea);
     // videoHeight = Rect_GetHeight(&maria_visibleArea);
-    const uint8_t* buffer = maria_surface + ((maria_visibleArea.top - maria_displayArea.top) * Rect_GetLength(&maria_visibleArea));
+
     // uint16_t* surface = framebuffer;
     // int pitch = 320;
     //
@@ -675,7 +675,7 @@ void emu_step(odroid_gamepad_state* gamepad)
     //     surface += pitch;
     //     buffer  += videoWidth;
     // }
-    memcpy(framebuffer, buffer, 320 * 240);
+
     //odroid_audio_submit((int16_t*)sampleBuffer, tiaSamplesPerFrame);
 }
 
@@ -771,7 +771,9 @@ void app_main()
 
         if (RenderFlag)
         {
-            // TIA& tia = console->tia();
+            const uint8_t* buffer = maria_surface + ((maria_visibleArea.top - maria_displayArea.top) * Rect_GetLength(&maria_visibleArea));
+            memcpy(framebuffer, buffer, 320 * 240);
+            
             uint8_t* fb = framebuffer;
             xQueueSend(vidQueue, &fb, portMAX_DELAY);
 
