@@ -1,3 +1,4 @@
+#pragma GCC optimize ("O3")
 // ----------------------------------------------------------------------------
 //   ___  ___  ___  ___       ___  ____  ___  _  _
 //  /__/ /__/ /  / /__  /__/ /__    /   /_   / |/ /
@@ -29,6 +30,7 @@
 #include "Pokey.h"
 
 #include <esp_heap_caps.h>
+#include <esp_attr.h>
 
 #define CARTRIDGE_SOURCE "Cartridge.cpp"
 
@@ -246,7 +248,7 @@ void cartridge_Store(void)
 // ----------------------------------------------------------------------------
 // Write
 // ----------------------------------------------------------------------------
-void cartridge_Write(uint16_t address, uint8_t data)
+IRAM_ATTR void cartridge_Write(uint16_t address, uint8_t data)
 {
    switch(cartridge_type)
    {

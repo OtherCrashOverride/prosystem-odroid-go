@@ -1723,7 +1723,7 @@ IRAM_ATTR uint32_t sally_ExecuteInstruction(void)
 // ----------------------------------------------------------------------------
 // ExecuteRES
 // ----------------------------------------------------------------------------
-uint32_t sally_ExecuteRES(void)
+IRAM_ATTR uint32_t sally_ExecuteRES(void)
 {
    sally_p = SALLY_FLAG.I | SALLY_FLAG.R | SALLY_FLAG.Z;
    sally_pc.b.l = memory_ram[SALLY_RES.L];
@@ -1734,7 +1734,7 @@ uint32_t sally_ExecuteRES(void)
 // ----------------------------------------------------------------------------
 // ExecuteNMI
 // ----------------------------------------------------------------------------
-uint32_t sally_ExecuteNMI(void)
+IRAM_ATTR uint32_t sally_ExecuteNMI(void)
 {
    sally_Push(sally_pc.b.h);
    sally_Push(sally_pc.b.l);
@@ -1749,7 +1749,7 @@ uint32_t sally_ExecuteNMI(void)
 // ----------------------------------------------------------------------------
 // Execute IRQ
 // ----------------------------------------------------------------------------
-uint32_t sally_ExecuteIRQ(void)
+IRAM_ATTR uint32_t sally_ExecuteIRQ(void)
 {
    if(!(sally_p & SALLY_FLAG.I))
    {

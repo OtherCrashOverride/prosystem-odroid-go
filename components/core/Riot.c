@@ -27,6 +27,8 @@
 #include "Equates.h"
 #include "Memory.h"
 
+#include <esp_attr.h>
+
 bool riot_timing = false;
 uint16_t riot_timer = TIM64T;
 uint8_t riot_intervals;
@@ -66,7 +68,7 @@ void riot_Reset(void)
 // | 15       | Console      | Left Difficulty
 // | 16       | Console      | Right Difficulty
 // +----------+--------------+-------------------------------------------------
-void riot_SetInput(const uint8_t* input)
+IRAM_ATTR void riot_SetInput(const uint8_t* input)
 {
 
    /*gdement: 	Comments are messy, but wanted to document how this all works.
@@ -228,7 +230,7 @@ void riot_SetTimer(uint16_t timer, uint8_t intervals)
 // ----------------------------------------------------------------------------
 // UpdateTimer
 // ----------------------------------------------------------------------------
-void riot_UpdateTimer(uint8_t cycles)
+IRAM_ATTR void riot_UpdateTimer(uint8_t cycles)
 {
    riot_currentTime -= cycles;
    if(!riot_elapsed && riot_currentTime > 0)

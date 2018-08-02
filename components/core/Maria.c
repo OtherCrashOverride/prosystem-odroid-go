@@ -30,6 +30,7 @@
 #include "Sally.h"
 
 #include <stdbool.h>
+#include <string.h>
 
 #include <esp_attr.h>
 
@@ -225,12 +226,13 @@ static inline void maria_WriteLineRAM(uint8_t* buffer)
 static inline void maria_StoreLineRAM(void)
 {
     if (!RenderFlag) return;
-    
+
    int index;
    uint8_t mode;
 
-   for(index = 0; index < MARIA_LINERAM_SIZE; index++)
-      maria_lineRAM[index] = 0;
+   //for(index = 0; index < MARIA_LINERAM_SIZE; index++)
+//      maria_lineRAM[index] = 0;
+    memset(maria_lineRAM, 0, MARIA_LINERAM_SIZE);
 
    mode = memory_ram[maria_dp.w + 1];
 

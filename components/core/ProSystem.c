@@ -34,6 +34,9 @@
 #include "Sally.h"
 #include "Tia.h"
 #include "Pokey.h"
+
+#include <esp_attr.h>
+
 #define PRO_SYSTEM_STATE_HEADER "PRO-SYSTEM STATE"
 #define PRO_SYSTEM_SOURCE "ProSystem.cpp"
 
@@ -73,7 +76,7 @@ void prosystem_Reset(void)
 // ----------------------------------------------------------------------------
 // ExecuteFrame
 // ----------------------------------------------------------------------------
-void prosystem_ExecuteFrame(const uint8_t* input)
+IRAM_ATTR void prosystem_ExecuteFrame(const uint8_t* input)
 {
    riot_SetInput(input);
 
