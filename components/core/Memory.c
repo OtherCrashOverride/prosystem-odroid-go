@@ -30,6 +30,7 @@
 #include "Riot.h"
 
 #include <esp_heap_caps.h>
+#include <esp_attr.h>
 
 uint8_t memory_ram[MEMORY_SIZE] = {0};
 uint8_t* memory_rom; //[MEMORY_SIZE] = {0};
@@ -61,7 +62,7 @@ void memory_Reset(void)
 // ----------------------------------------------------------------------------
 // Read
 // ----------------------------------------------------------------------------
-uint8_t memory_Read(uint16_t address)
+IRAM_ATTR uint8_t memory_Read(uint16_t address)
 {
    switch ( address )
    {
@@ -83,7 +84,7 @@ uint8_t memory_Read(uint16_t address)
 // ----------------------------------------------------------------------------
 // Write
 // ----------------------------------------------------------------------------
-void memory_Write(uint16_t address, uint8_t data)
+IRAM_ATTR void memory_Write(uint16_t address, uint8_t data)
 {
    if(!memory_rom[address])
    {

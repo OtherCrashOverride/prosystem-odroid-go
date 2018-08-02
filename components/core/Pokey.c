@@ -43,6 +43,7 @@
 #include "Pokey.h"
 
 #include <esp_heap_caps.h>
+#include <esp_attr.h>
 
 #define POKEY_NOTPOLY5 0x80
 #define POKEY_POLY4 0x40
@@ -139,7 +140,7 @@ void pokey_Reset(void)
 // ----------------------------------------------------------------------------
 // SetRegister
 // ----------------------------------------------------------------------------
-void pokey_SetRegister(uint16_t address, uint8_t value)
+IRAM_ATTR void pokey_SetRegister(uint16_t address, uint8_t value)
 {
    uint8_t channel;
    uint8_t channelMask;
@@ -297,7 +298,7 @@ void pokey_SetRegister(uint16_t address, uint8_t value)
 // ----------------------------------------------------------------------------
 // Process
 // ----------------------------------------------------------------------------
-void pokey_Process(uint32_t length)
+IRAM_ATTR void pokey_Process(uint32_t length)
 {
    uint8_t* buffer = pokey_buffer + pokey_soundCntr;
 #ifdef MSB_FIRST

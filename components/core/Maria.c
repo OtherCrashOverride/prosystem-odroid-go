@@ -31,6 +31,8 @@
 
 #include <stdbool.h>
 
+#include <esp_attr.h>
+
 extern bool RenderFlag;
 
 #define MARIA_LINERAM_SIZE 160
@@ -55,7 +57,7 @@ static uint8_t maria_wmode;
 // ----------------------------------------------------------------------------
 // StoreCell2
 // ----------------------------------------------------------------------------
-static void maria_StoreCell2(uint8_t data)
+static inline void maria_StoreCell2(uint8_t data)
 {
    if(maria_horizontal < MARIA_LINERAM_SIZE)
    {
@@ -75,7 +77,7 @@ static void maria_StoreCell2(uint8_t data)
 // ----------------------------------------------------------------------------
 // StoreCell
 // ----------------------------------------------------------------------------
-static void maria_StoreCell(uint8_t high, uint8_t low)
+static inline void maria_StoreCell(uint8_t high, uint8_t low)
 {
   if(maria_horizontal < MARIA_LINERAM_SIZE)
   {
@@ -94,7 +96,7 @@ static void maria_StoreCell(uint8_t high, uint8_t low)
 // ----------------------------------------------------------------------------
 // IsHolyDMA
 // ----------------------------------------------------------------------------
-static bool maria_IsHolyDMA(void)
+static inline bool maria_IsHolyDMA(void)
 {
    if(maria_pp.w > 32767)
    {
@@ -109,7 +111,7 @@ static bool maria_IsHolyDMA(void)
 // ----------------------------------------------------------------------------
 // GetColor
 // ----------------------------------------------------------------------------
-static uint8_t maria_GetColor(uint8_t data)
+static inline uint8_t maria_GetColor(uint8_t data)
 {
   if(data & 3)
     return memory_ram[BACKGRND + data];
@@ -119,7 +121,7 @@ static uint8_t maria_GetColor(uint8_t data)
 // ----------------------------------------------------------------------------
 // StoreGraphic
 // ----------------------------------------------------------------------------
-static void maria_StoreGraphic(void)
+static inline void maria_StoreGraphic(void)
 {
    uint8_t data = memory_ram[maria_pp.w];
    if(maria_wmode)
@@ -158,7 +160,7 @@ static void maria_StoreGraphic(void)
 // ----------------------------------------------------------------------------
 // WriteLineRAM
 // ----------------------------------------------------------------------------
-static void maria_WriteLineRAM(uint8_t* buffer)
+static inline void maria_WriteLineRAM(uint8_t* buffer)
 {
     if (!RenderFlag) return;
 
@@ -220,7 +222,7 @@ static void maria_WriteLineRAM(uint8_t* buffer)
 // ----------------------------------------------------------------------------
 // StoreLineRAM
 // ----------------------------------------------------------------------------
-static void maria_StoreLineRAM(void)
+static inline void maria_StoreLineRAM(void)
 {
    int index;
    uint8_t mode;
@@ -305,7 +307,7 @@ void maria_Reset(void)
 // ----------------------------------------------------------------------------
 // RenderScanline
 // ----------------------------------------------------------------------------
-uint32_t maria_RenderScanline(void)
+IRAM_ATTR uint32_t maria_RenderScanline(void)
 {
    maria_cycles = 0;
    if((memory_ram[CTRL] & 96) == 64 && maria_scanline >= maria_displayArea.top && maria_scanline <= maria_displayArea.bottom)
