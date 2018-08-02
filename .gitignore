@@ -1,0 +1,8 @@
+*.o
+*.so
+*.dll
+*.dylib
+*.exe
+*.gch
+sdkconfig.old
+build/
