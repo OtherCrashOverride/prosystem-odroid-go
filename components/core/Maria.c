@@ -60,7 +60,7 @@ static uint8_t maria_wmode;
 // ----------------------------------------------------------------------------
 static inline void maria_StoreCell2(uint8_t data)
 {
-   if(RenderFlag && maria_horizontal < MARIA_LINERAM_SIZE)
+   //if(RenderFlag && maria_horizontal < MARIA_LINERAM_SIZE)
    {
       if(data)
          maria_lineRAM[maria_horizontal] = maria_palette | data;
@@ -80,7 +80,7 @@ static inline void maria_StoreCell2(uint8_t data)
 // ----------------------------------------------------------------------------
 static inline void maria_StoreCell(uint8_t high, uint8_t low)
 {
-  if(RenderFlag && maria_horizontal < MARIA_LINERAM_SIZE)
+  //if(RenderFlag && maria_horizontal < MARIA_LINERAM_SIZE)
   {
     if(low || high)
       maria_lineRAM[maria_horizontal] = (maria_palette & 16) | high | low;
@@ -124,6 +124,8 @@ static inline uint8_t maria_GetColor(uint8_t data)
 // ----------------------------------------------------------------------------
 static inline void maria_StoreGraphic(void)
 {
+    if (maria_horizontal >= MARIA_LINERAM_SIZE) return;
+    
    uint8_t data = memory_ram[maria_pp.w];
    if(maria_wmode)
    {
