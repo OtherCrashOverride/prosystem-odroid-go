@@ -35,6 +35,8 @@
 #include "Tia.h"
 #include "Pokey.h"
 
+#include <stdlib.h>
+
 #include <esp_attr.h>
 
 #define PRO_SYSTEM_STATE_HEADER "PRO-SYSTEM STATE"
@@ -170,9 +172,10 @@ bool prosystem_Save(char *buffer, bool compress)
 
    if(cartridge_type == CARTRIDGE_TYPE_SUPERCART_RAM)
    {
-      for(index = 0; index < 16384; index++)
-         buffer[size + index] = memory_ram[16384 + index];
-      size += 16384;
+       abort();
+    //   for(index = 0; index < 16384; index++)
+    //      buffer[size + index] = memory_ram[16384 + index];
+    //   size += 16384;
    }
 
    return true;

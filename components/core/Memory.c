@@ -175,7 +175,7 @@ void memory_WriteROM(uint16_t address, uint16_t size, const uint8_t* data)
 {
    //uint32_t index;
 
-   if((address + size) <= MEMORY_SIZE && data != NULL)
+   //if((address + size) <= MEMORY_SIZE && data != NULL)
    {
     //   for(index = 0; index < size; index++)
     //   {
@@ -193,7 +193,7 @@ void memory_ClearROM(uint16_t address, uint16_t size)
 {
    //uint32_t index;
 
-   if((address + size) <= MEMORY_SIZE)
+   //if((address + size) <= MEMORY_SIZE)
    {
     //   for(index = 0; index < size; index++)
     //   {

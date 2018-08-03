@@ -430,8 +430,8 @@ static inline void sally_BRK(void) {
    sally_Push(sally_p);
 
    sally_p |= SALLY_FLAG.I;
-   sally_pc.b.l = memory_ram[SALLY_IRQ.L];
-   sally_pc.b.h = memory_ram[SALLY_IRQ.H];
+   sally_pc.b.l = memory_Read(SALLY_IRQ.L);
+   sally_pc.b.h = memory_Read(SALLY_IRQ.H);
 }
 
 // ----------------------------------------------------------------------------
@@ -1726,8 +1726,8 @@ IRAM_ATTR uint32_t sally_ExecuteInstruction(void)
 IRAM_ATTR uint32_t sally_ExecuteRES(void)
 {
    sally_p = SALLY_FLAG.I | SALLY_FLAG.R | SALLY_FLAG.Z;
-   sally_pc.b.l = memory_ram[SALLY_RES.L];
-   sally_pc.b.h = memory_ram[SALLY_RES.H];
+   sally_pc.b.l = memory_Read(SALLY_RES.L);
+   sally_pc.b.h = memory_Read(SALLY_RES.H);
    return 6;
 }
 
@@ -1741,8 +1741,8 @@ IRAM_ATTR uint32_t sally_ExecuteNMI(void)
    sally_p &= ~SALLY_FLAG.B;
    sally_Push(sally_p);
    sally_p |= SALLY_FLAG.I;
-   sally_pc.b.l = memory_ram[SALLY_NMI.L];
-   sally_pc.b.h = memory_ram[SALLY_NMI.H];
+   sally_pc.b.l = memory_Read(SALLY_NMI.L);
+   sally_pc.b.h = memory_Read(SALLY_NMI.H);
    return 7;
 }
 
@@ -1758,8 +1758,8 @@ IRAM_ATTR uint32_t sally_ExecuteIRQ(void)
       sally_p &= ~SALLY_FLAG.B;
       sally_Push(sally_p);
       sally_p |= SALLY_FLAG.I;
-      sally_pc.b.l = memory_ram[SALLY_IRQ.L];
-      sally_pc.b.h = memory_ram[SALLY_IRQ.H];
+      sally_pc.b.l = memory_Read(SALLY_IRQ.L);
+      sally_pc.b.h = memory_Read(SALLY_IRQ.H);
    }
    return 7;
 }
