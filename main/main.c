@@ -38,7 +38,7 @@
 #define ESP32_PSRAM (0x3f800000)
 const char* SD_BASE_PATH = "/sd";
 
-#define AUDIO_SAMPLE_RATE (48000)
+#define AUDIO_SAMPLE_RATE (31400)
 
 QueueHandle_t vidQueue;
 
@@ -652,31 +652,77 @@ void emu_init(const char* filename)
     display_ResetPalette16();
 }
 
+
+static void sound_Resample(const uint8_t* source, uint8_t* target, int length)
+{
+   int measurement = AUDIO_SAMPLE_RATE;
+   int sourceIndex = 0;
+   int targetIndex = 0;
+
+   int max = ((prosystem_frequency * prosystem_scanlines) << 1);
+
+   while(targetIndex < length)
+   {
+      if(measurement >= max)
+      {
+         target[targetIndex++] = source[sourceIndex];
+         measurement -= max;
+      }
+      else
+      {
+         sourceIndex++;
+         measurement += AUDIO_SAMPLE_RATE;
+      }
+   }
+}
+
+
+static int16_t* sampleBuffer;
+size_t sampleBufferLength;
 void emu_step(odroid_gamepad_state* gamepad)
 {
     // Emulate
     prosystem_ExecuteFrame(keyboard_data); // wants input
 
 
-    // Video
-    // videoWidth  = Rect_GetLength(&maria_visibleArea);
-    // videoHeight = Rect_GetHeight(&maria_visibleArea);
+    // Audio
+    int length = AUDIO_SAMPLE_RATE / prosystem_frequency;
+    if (!sampleBuffer)
+    {
+        sampleBufferLength = length * sizeof(uint16_t) * 2;
+        sampleBuffer = malloc(sampleBufferLength);
+        if (!sampleBuffer) abort();
 
-    // uint16_t* surface = framebuffer;
-    // int pitch = 320;
-    //
-    // for(int y = 0; y < videoHeight; y++)
-    // {
-    //     for(int x = 0; x < videoWidth; ++x)
-    //     {
-    //         surface[x] = display_palette16[buffer[x]];
-    //     }
-    //
-    //     surface += pitch;
-    //     buffer  += videoWidth;
-    // }
+        printf("%s: Allocated sampleBuffer. length=%d, sampleBufferLength=%d\n",
+            __func__, length, sampleBufferLength);
+    }
 
-    //odroid_audio_submit((int16_t*)sampleBuffer, tiaSamplesPerFrame);
+
+
+   /* Convert 8u to 16s */
+   if (length > sampleBufferLength)
+   {
+       printf("%s: audio overflow. length=%d, sampleBufferLength=%d\n", __func__, length, sampleBufferLength);
+       abort();
+   }
+
+   uint32_t* framePtr = (uint32_t)sampleBuffer;
+   for(int i = 0; i != length; i ++)
+   {
+      int16_t sample16 = (tia_buffer[i] - 128);
+
+      if(cartridge_pokey)
+      {
+          sample16 += (pokey_buffer[i] - 128);
+          sample16 >>= 1;
+      }
+
+      sample16 <<= 8;
+
+      framePtr[i] = (sample16 << 16) | sample16;
+    }
+
+    odroid_audio_submit((int16_t*)sampleBuffer, length);
 }
 
 
