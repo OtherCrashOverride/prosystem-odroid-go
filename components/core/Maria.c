@@ -55,7 +55,7 @@ static uint8_t maria_h08;
 static uint8_t maria_h16;
 static uint8_t maria_wmode;
 
-#define MEM_READ(address) (fastmap[(address) >> 12][(address) & 0xfff])
+#define MEM_READ(address) (fastmap[((address) & 0xffff) >> 12][(address) & 0xfff])
 
 // ----------------------------------------------------------------------------
 // StoreCell2
