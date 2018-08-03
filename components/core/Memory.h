@@ -40,6 +40,7 @@ extern void memory_WriteROM(uint16_t address, uint16_t size, const uint8_t* data
 extern void memory_ClearROM(uint16_t address, uint16_t size);
 extern uint8_t memory_ram[MEMORY_SIZE];
 //extern uint8_t* memory_rom; //[MEMORY_SIZE];
+extern uint8_t* fastmap[16];
 
 #ifdef __cplusplus
 }

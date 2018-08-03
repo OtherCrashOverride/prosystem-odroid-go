@@ -36,6 +36,7 @@
 
 uint8_t memory_ram[MEMORY_SIZE] = {0};
 //uint8_t* memory_rom; //[MEMORY_SIZE] = {0};
+uint8_t* fastmap[16];
 
 // ----------------------------------------------------------------------------
 // Reset
@@ -60,6 +61,11 @@ void memory_Reset(void)
    }
    //for(index = 0; index < 16384; index++)
       //memory_rom[index] = 0;
+
+    for (int i = 0; i < 16; ++i)
+    {
+        fastmap[i] = &memory_ram[i * 0x1000];
+    }
 }
 // ----------------------------------------------------------------------------
 // Read
@@ -77,10 +83,11 @@ IRAM_ATTR uint8_t memory_Read(uint16_t address)
          memory_ram[INTFLG] &= 0x7f;
          return memory_ram[INTFLG];
       default:
-         break;
+         return fastmap[address >> 12][address & 0xfff];
    }
 
-   return memory_ram[address];
+   //return memory_ram[address];
+
 }
 
 // ----------------------------------------------------------------------------
