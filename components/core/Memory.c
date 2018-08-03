@@ -29,35 +29,37 @@
 #include "Tia.h"
 #include "Riot.h"
 
+#include <string.h>
+
 #include <esp_heap_caps.h>
 #include <esp_attr.h>
 
 uint8_t memory_ram[MEMORY_SIZE] = {0};
-uint8_t* memory_rom; //[MEMORY_SIZE] = {0};
+//uint8_t* memory_rom; //[MEMORY_SIZE] = {0};
 
 // ----------------------------------------------------------------------------
 // Reset
 // ----------------------------------------------------------------------------
 void memory_Reset(void)
 {
-    if (!memory_rom)
-    {
-        //memory_ram = heap_caps_malloc(MEMORY_SIZE, MALLOC_CAP_SPIRAM);
-        // memory_ram = malloc(MEMORY_SIZE);
-        // if (!memory_ram) abort();
-
-        memory_rom = heap_caps_malloc(MEMORY_SIZE, MALLOC_CAP_SPIRAM);
-        if (!memory_rom) abort();
-    }
+    // if (!memory_rom)
+    // {
+    //     //memory_ram = heap_caps_malloc(MEMORY_SIZE, MALLOC_CAP_SPIRAM);
+    //     // memory_ram = malloc(MEMORY_SIZE);
+    //     // if (!memory_ram) abort();
+    //
+    //     memory_rom = heap_caps_malloc(MEMORY_SIZE, MALLOC_CAP_SPIRAM);
+    //     if (!memory_rom) abort();
+    // }
 
    uint32_t index;
    for(index = 0; index < MEMORY_SIZE; index++)
    {
       memory_ram[index] = 0;
-      memory_rom[index] = 1;
+      //memory_rom[index] = 1;
    }
-   for(index = 0; index < 16384; index++)
-      memory_rom[index] = 0;
+   //for(index = 0; index < 16384; index++)
+      //memory_rom[index] = 0;
 }
 // ----------------------------------------------------------------------------
 // Read
@@ -86,7 +88,7 @@ IRAM_ATTR uint8_t memory_Read(uint16_t address)
 // ----------------------------------------------------------------------------
 IRAM_ATTR void memory_Write(uint16_t address, uint8_t data)
 {
-   if(!memory_rom[address])
+   if(address < 0x4000)
    {
       switch(address)
       {
@@ -171,15 +173,16 @@ IRAM_ATTR void memory_Write(uint16_t address, uint8_t data)
 // ----------------------------------------------------------------------------
 void memory_WriteROM(uint16_t address, uint16_t size, const uint8_t* data)
 {
-   uint32_t index;
+   //uint32_t index;
 
    if((address + size) <= MEMORY_SIZE && data != NULL)
    {
-      for(index = 0; index < size; index++)
-      {
-         memory_ram[address + index] = data[index];
-         memory_rom[address + index] = 1;
-      }
+    //   for(index = 0; index < size; index++)
+    //   {
+    //      memory_ram[address + index] = data[index];
+    //      //memory_rom[address + index] = 1;
+    //   }
+        memcpy(&memory_ram[address], data, size);
    }
 }
 
@@ -188,14 +191,15 @@ void memory_WriteROM(uint16_t address, uint16_t size, const uint8_t* data)
 // ----------------------------------------------------------------------------
 void memory_ClearROM(uint16_t address, uint16_t size)
 {
-   uint32_t index;
+   //uint32_t index;
 
    if((address + size) <= MEMORY_SIZE)
    {
-      for(index = 0; index < size; index++)
-      {
-         memory_ram[address + index] = 0;
-         memory_rom[address + index] = 0;
-      }
+    //   for(index = 0; index < size; index++)
+    //   {
+    //      memory_ram[address + index] = 0;
+    //      //memory_rom[address + index] = 0;
+    //   }
+        memset(&memory_ram[address], 0, size);
    }
 }
