@@ -38,7 +38,7 @@
 #define ESP32_PSRAM (0x3f800000)
 const char* SD_BASE_PATH = "/sd";
 
-#define AUDIO_SAMPLE_RATE (31400)
+#define AUDIO_SAMPLE_RATE (32000)
 
 QueueHandle_t vidQueue;
 
@@ -679,6 +679,11 @@ static void sound_Resample(const uint8_t* source, uint8_t* target, int length)
 
 static int16_t* sampleBuffer;
 size_t sampleBufferLength;
+
+#define MAX_BUFFER_SIZE 1024
+uint8_t tiaSamples[MAX_BUFFER_SIZE];
+uint8_t pokeySamples[MAX_BUFFER_SIZE];
+
 void emu_step(odroid_gamepad_state* gamepad)
 {
     // SetInput
@@ -730,6 +735,15 @@ void emu_step(odroid_gamepad_state* gamepad)
     }
 
 
+    memset(tiaSamples, 0, MAX_BUFFER_SIZE);
+    sound_Resample(tia_buffer, tiaSamples, length);
+
+    if(cartridge_pokey)
+    {
+        memset(pokeySamples, 0, MAX_BUFFER_SIZE);
+        sound_Resample(pokey_buffer, pokeySamples, length);
+    }
+
 
    /* Convert 8u to 16s */
    if (length > sampleBufferLength)
@@ -741,11 +755,11 @@ void emu_step(odroid_gamepad_state* gamepad)
    uint32_t* framePtr = (uint32_t)sampleBuffer;
    for(int i = 0; i != length; i ++)
    {
-      int16_t sample16 = (tia_buffer[i] - 128);
+      int16_t sample16 = (tiaSamples[i] - 128);
 
       if(cartridge_pokey)
       {
-          sample16 += (pokey_buffer[i] - 128);
+          sample16 += (pokeySamples[i] - 128);
           sample16 >>= 1;
       }
 
