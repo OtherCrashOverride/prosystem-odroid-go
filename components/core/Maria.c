@@ -60,7 +60,7 @@ static uint8_t maria_wmode;
 // ----------------------------------------------------------------------------
 static inline void maria_StoreCell2(uint8_t data)
 {
-   //if(RenderFlag && maria_horizontal < MARIA_LINERAM_SIZE)
+   //if(maria_horizontal < MARIA_LINERAM_SIZE)
    {
       if(data)
          maria_lineRAM[maria_horizontal] = maria_palette | data;
@@ -80,7 +80,7 @@ static inline void maria_StoreCell2(uint8_t data)
 // ----------------------------------------------------------------------------
 static inline void maria_StoreCell(uint8_t high, uint8_t low)
 {
-  //if(RenderFlag && maria_horizontal < MARIA_LINERAM_SIZE)
+  //if(maria_horizontal < MARIA_LINERAM_SIZE)
   {
     if(low || high)
       maria_lineRAM[maria_horizontal] = (maria_palette & 16) | high | low;
@@ -114,9 +114,10 @@ static inline bool maria_IsHolyDMA(void)
 // ----------------------------------------------------------------------------
 static inline uint8_t maria_GetColor(uint8_t data)
 {
-  if(data & 3)
-    return memory_ram[BACKGRND + data];
-  return memory_ram[BACKGRND];
+  // if(data & 3)
+  //   return memory_ram[BACKGRND + data];
+  // return memory_ram[BACKGRND];
+  return (data & 3) ? memory_ram[BACKGRND + data] : memory_ram[BACKGRND];
 }
 
 // ----------------------------------------------------------------------------
@@ -124,8 +125,8 @@ static inline uint8_t maria_GetColor(uint8_t data)
 // ----------------------------------------------------------------------------
 static inline void maria_StoreGraphic(void)
 {
-    if (maria_horizontal >= MARIA_LINERAM_SIZE) return;
-    
+    //if (maria_horizontal >= MARIA_LINERAM_SIZE) return;
+
    uint8_t data = memory_ram[maria_pp.w];
    if(maria_wmode)
    {
@@ -165,60 +166,71 @@ static inline void maria_StoreGraphic(void)
 // ----------------------------------------------------------------------------
 static inline void maria_WriteLineRAM(uint8_t* buffer)
 {
-    if (!RenderFlag) return;
+    //if (!RenderFlag) return;
 
    uint8_t rmode = memory_ram[CTRL] & 3;
 
-   if(rmode == 0)
+   switch(rmode)
    {
-      int pixel = 0, index;
+       case 0:
+       {
+          int pixel = 0, index;
 
-      for(index = 0; index < MARIA_LINERAM_SIZE; index += 4)
-      {
-         uint8_t color;
-         color = maria_GetColor(maria_lineRAM[index + 0]);
-         buffer[pixel++] = color;
-         buffer[pixel++] = color;
-         color = maria_GetColor(maria_lineRAM[index + 1]);
-         buffer[pixel++] = color;
-         buffer[pixel++] = color;
-         color = maria_GetColor(maria_lineRAM[index + 2]);
-         buffer[pixel++] = color;
-         buffer[pixel++] = color;
-         color = maria_GetColor(maria_lineRAM[index + 3]);
-         buffer[pixel++] = color;
-         buffer[pixel++] = color;
-      }
-   }
-   else if(rmode == 2)
-   {
-      int pixel = 0, index;
-      for(index = 0; index < MARIA_LINERAM_SIZE; index += 4)
-      {
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 0] & 16) | ((maria_lineRAM[index + 0] & 8) >> 3) | ((maria_lineRAM[index + 0] & 2)));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 0] & 16) | ((maria_lineRAM[index + 0] & 4) >> 2) | ((maria_lineRAM[index + 0] & 1) << 1));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 1] & 16) | ((maria_lineRAM[index + 1] & 8) >> 3) | ((maria_lineRAM[index + 1] & 2)));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 1] & 16) | ((maria_lineRAM[index + 1] & 4) >> 2) | ((maria_lineRAM[index + 1] & 1) << 1));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 2] & 16) | ((maria_lineRAM[index + 2] & 8) >> 3) | ((maria_lineRAM[index + 2] & 2)));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 2] & 16) | ((maria_lineRAM[index + 2] & 4) >> 2) | ((maria_lineRAM[index + 2] & 1) << 1));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 3] & 16) | ((maria_lineRAM[index + 3] & 8) >> 3) | ((maria_lineRAM[index + 3] & 2)));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 3] & 16) | ((maria_lineRAM[index + 3] & 4) >> 2) | ((maria_lineRAM[index + 3] & 1) << 1));
-      }
-   }
-   else if(rmode == 3)
-   {
-      int pixel = 0, index;
-      for(index = 0; index < MARIA_LINERAM_SIZE; index += 4)
-      {
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 0] & 30));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 0] & 28) | ((maria_lineRAM[index + 0] & 1) << 1));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 1] & 30));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 1] & 28) | ((maria_lineRAM[index + 1] & 1) << 1));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 2] & 30));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 2] & 28) | ((maria_lineRAM[index + 2] & 1) << 1));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 3] & 30));
-         buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 3] & 28) | ((maria_lineRAM[index + 3] & 1) << 1));
-      }
+          for(index = 0; index < MARIA_LINERAM_SIZE; index += 4)
+          {
+             uint8_t color;
+             color = maria_GetColor(maria_lineRAM[index + 0]);
+             buffer[pixel++] = color;
+             buffer[pixel++] = color;
+             color = maria_GetColor(maria_lineRAM[index + 1]);
+             buffer[pixel++] = color;
+             buffer[pixel++] = color;
+             color = maria_GetColor(maria_lineRAM[index + 2]);
+             buffer[pixel++] = color;
+             buffer[pixel++] = color;
+             color = maria_GetColor(maria_lineRAM[index + 3]);
+             buffer[pixel++] = color;
+             buffer[pixel++] = color;
+          }
+
+          break;
+       }
+
+       case 2:
+       {
+          int pixel = 0, index;
+          for(index = 0; index < MARIA_LINERAM_SIZE; index += 4)
+          {
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 0] & 16) | ((maria_lineRAM[index + 0] & 8) >> 3) | ((maria_lineRAM[index + 0] & 2)));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 0] & 16) | ((maria_lineRAM[index + 0] & 4) >> 2) | ((maria_lineRAM[index + 0] & 1) << 1));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 1] & 16) | ((maria_lineRAM[index + 1] & 8) >> 3) | ((maria_lineRAM[index + 1] & 2)));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 1] & 16) | ((maria_lineRAM[index + 1] & 4) >> 2) | ((maria_lineRAM[index + 1] & 1) << 1));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 2] & 16) | ((maria_lineRAM[index + 2] & 8) >> 3) | ((maria_lineRAM[index + 2] & 2)));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 2] & 16) | ((maria_lineRAM[index + 2] & 4) >> 2) | ((maria_lineRAM[index + 2] & 1) << 1));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 3] & 16) | ((maria_lineRAM[index + 3] & 8) >> 3) | ((maria_lineRAM[index + 3] & 2)));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 3] & 16) | ((maria_lineRAM[index + 3] & 4) >> 2) | ((maria_lineRAM[index + 3] & 1) << 1));
+          }
+
+          break;
+       }
+
+       case 3:
+       {
+          int pixel = 0, index;
+          for(index = 0; index < MARIA_LINERAM_SIZE; index += 4)
+          {
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 0] & 30));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 0] & 28) | ((maria_lineRAM[index + 0] & 1) << 1));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 1] & 30));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 1] & 28) | ((maria_lineRAM[index + 1] & 1) << 1));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 2] & 30));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 2] & 28) | ((maria_lineRAM[index + 2] & 1) << 1));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 3] & 30));
+             buffer[pixel++] = maria_GetColor((maria_lineRAM[index + 3] & 28) | ((maria_lineRAM[index + 3] & 1) << 1));
+          }
+
+          break;
+       }
    }
 }
 
@@ -227,7 +239,7 @@ static inline void maria_WriteLineRAM(uint8_t* buffer)
 // ----------------------------------------------------------------------------
 static inline void maria_StoreLineRAM(void)
 {
-    if (!RenderFlag) return;
+    //if (!RenderFlag) return;
 
    int index;
    uint8_t mode;
@@ -334,13 +346,13 @@ IRAM_ATTR uint32_t maria_RenderScanline(void)
             sally_ExecuteNMI( );
       }
       else if(maria_scanline >= maria_visibleArea.top && maria_scanline <= maria_visibleArea.bottom)
-         maria_WriteLineRAM(maria_surface + ((maria_scanline - maria_displayArea.top) * Rect_GetLength(&maria_displayArea)));
+         if (RenderFlag) maria_WriteLineRAM(maria_surface + ((maria_scanline - maria_displayArea.top) * Rect_GetLength(&maria_displayArea)));
 
       if(maria_scanline != maria_displayArea.bottom)
       {
          maria_dp.b.l = memory_ram[maria_dpp.w + 2];
          maria_dp.b.h = memory_ram[maria_dpp.w + 1];
-         maria_StoreLineRAM( );
+         if (RenderFlag) maria_StoreLineRAM( );
          maria_offset--;
          if(maria_offset < 0)
          {

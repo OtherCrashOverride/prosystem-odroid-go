@@ -764,7 +764,7 @@ void app_main()
         }
 
 
-        RenderFlag = renderTable[frame & 7];
+        RenderFlag = frame & 1; //renderTable[frame & 7];
         emu_step(&gamepad);
         //printf("stepped.\n");
 
