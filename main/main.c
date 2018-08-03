@@ -850,8 +850,11 @@ void app_main()
         if (RenderFlag)
         {
             //const uint8_t* buffer = maria_surface + ((maria_visibleArea.top - maria_displayArea.top) * Rect_GetLength(&maria_visibleArea));
-            const uint8_t* buffer = maria_surface + ((maria_displayArea.top) * 320);
-            buffer += ((maria_displayArea.bottom - maria_displayArea.top) - 240) / 2 * 320;
+            const uint8_t* buffer = maria_surface + ((maria_visibleArea.top) * 320);
+
+            int vert = maria_visibleArea.bottom - maria_visibleArea.top;
+            int offset = (vert < 271) ? ((240 / 2) - (192 / 2)) : 0;
+            buffer -= offset * 320;
 
             memcpy(framebuffer, buffer, 320 * 240);
 
