@@ -34,7 +34,7 @@
 #include <esp_heap_caps.h>
 #include <esp_attr.h>
 
-uint8_t memory_ram[MEMORY_SIZE] = {0};
+uint8_t memory_ram[0x4000 /*MEMORY_SIZE*/];
 //uint8_t* memory_rom; //[MEMORY_SIZE] = {0};
 uint8_t* fastmap[16];
 uint8_t* cartRAM;
@@ -63,7 +63,7 @@ void memory_Reset(void)
     }
 
    uint32_t index;
-   for(index = 0; index < MEMORY_SIZE; index++)
+   for(index = 0; index < sizeof(memory_ram); index++)
    {
       memory_ram[index] = 0;
       //memory_rom[index] = 1;
@@ -71,7 +71,7 @@ void memory_Reset(void)
    //for(index = 0; index < 16384; index++)
       //memory_rom[index] = 0;
 
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         fastmap[i] = &memory_ram[i * 0x1000];
     }
@@ -208,9 +208,13 @@ void memory_WriteROM(uint16_t address, uint16_t size, const uint8_t* data)
     //   }
         //memcpy(&memory_ram[address], data, size);
    }
+   // printf("%s: address=%#06x, size=%#06x, data=%p\n",
+   //      __func__, address, size, data);
 
    for (int i = 0; i < size; i += 0x1000)
    {
+    //    printf("%s: i=%d, address=%#06x, data=%p\n",
+    //         __func__, i, address + i, data + i);
        fastmap[(address + i) >> 12] = (uint8_t*)(data + i);
    }
 }
@@ -233,9 +237,11 @@ void memory_ClearROM(uint16_t address, uint16_t size)
    }
 
    //cartRAM
+   // printf("%s: address=%#06x, size=%#06x\n",
+   //      __func__, address, size);
 
    if (size > 16384) abort();
-   
+
    for (int i = 0; i < size; i += 0x1000)
    {
        fastmap[(address + i) >> 12] = (uint8_t*)(cartRAM + i);

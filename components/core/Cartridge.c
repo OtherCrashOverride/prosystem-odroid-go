@@ -189,6 +189,8 @@ bool cartridge_Load(const uint8_t* data, uint32_t size)
 
    hash_Compute(cartridge_digest, cartridge_buffer, cartridge_size);
 
+   printf("%s: cartridge_size=%#06x\n", __func__, cartridge_size);
+
    return true;
 }
 
@@ -201,6 +203,13 @@ void cartridge_Store(void)
    {
       case CARTRIDGE_TYPE_NORMAL:
          memory_WriteROM(65536 - cartridge_size, cartridge_size, cartridge_buffer);
+
+         if (cartridge_size == 0x4000)
+         {
+             // Mirror
+             memory_WriteROM(0x4000, cartridge_size, cartridge_buffer);
+             memory_WriteROM(0x8000, cartridge_size, cartridge_buffer);
+         }
          break;
       case CARTRIDGE_TYPE_SUPERCART:
          if(cartridge_GetBankOffset(7) < cartridge_size)

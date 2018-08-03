@@ -39,6 +39,11 @@ static bool riot_elapsed;
 static int riot_currentTime;
 static uint16_t riot_clocks;
 
+#define MEM_READ(address) (fastmap[(address) >> 12][(address) & 0xfff])
+#define MEM_WRITE(address, data) { fastmap[(address) >> 12][(address) & 0xfff] = (data); }
+
+extern uint8_t memory_ram[0x4000 /*MEMORY_SIZE*/];
+
 void riot_Reset(void)
 {
 	riot_SetDRA(0);

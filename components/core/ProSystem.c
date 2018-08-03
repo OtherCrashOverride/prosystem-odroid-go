@@ -47,6 +47,8 @@ uint8_t prosystem_frame = 0;
 uint16_t prosystem_scanlines = 262;
 uint32_t prosystem_cycles = 0;
 
+extern uint8_t memory_ram[0x4000 /*MEMORY_SIZE*/];
+
 // ----------------------------------------------------------------------------
 // Reset
 // ----------------------------------------------------------------------------
