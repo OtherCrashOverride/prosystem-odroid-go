@@ -681,6 +681,38 @@ static int16_t* sampleBuffer;
 size_t sampleBufferLength;
 void emu_step(odroid_gamepad_state* gamepad)
 {
+    // SetInput
+    // +----------+--------------+-------------------------------------------------
+    // | Offset   | Controller   | Control
+    // +----------+--------------+-------------------------------------------------
+    // | 00       | Joystick 1   | Right
+    // | 01       | Joystick 1   | Left
+    // | 02       | Joystick 1   | Down
+    // | 03       | Joystick 1   | Up
+    // | 04       | Joystick 1   | Button 1
+    // | 05       | Joystick 1   | Button 2
+    // | 06       | Joystick 2   | Right
+    // | 07       | Joystick 2   | Left
+    // | 08       | Joystick 2   | Down
+    // | 09       | Joystick 2   | Up
+    // | 10       | Joystick 2   | Button 1
+    // | 11       | Joystick 2   | Button 2
+    // | 12       | Console      | Reset
+    // | 13       | Console      | Select
+    // | 14       | Console      | Pause
+    // | 15       | Console      | Left Difficulty
+    // | 16       | Console      | Right Difficulty
+    // +----------+--------------+-------------------------------------------------
+    keyboard_data[0] = gamepad->values[ODROID_INPUT_RIGHT];
+    keyboard_data[1] = gamepad->values[ODROID_INPUT_LEFT];
+    keyboard_data[2] = gamepad->values[ODROID_INPUT_DOWN];
+    keyboard_data[3] = gamepad->values[ODROID_INPUT_UP];
+    keyboard_data[4] = gamepad->values[ODROID_INPUT_B];
+    keyboard_data[5] = gamepad->values[ODROID_INPUT_A];
+    keyboard_data[13] = gamepad->values[ODROID_INPUT_SELECT];
+    keyboard_data[14] = gamepad->values[ODROID_INPUT_START];
+
+
     // Emulate
     prosystem_ExecuteFrame(keyboard_data); // wants input
 
