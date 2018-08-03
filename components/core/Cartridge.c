@@ -44,6 +44,7 @@ uint32_t cartridge_flags;
 
 static uint8_t* cartridge_buffer = NULL;
 static uint32_t cartridge_size = 0;
+static uint8_t* pokey_ram = NULL;
 
 // ----------------------------------------------------------------------------
 // HasHeader
@@ -189,7 +190,29 @@ bool cartridge_Load(const uint8_t* data, uint32_t size)
 
    hash_Compute(cartridge_digest, cartridge_buffer, cartridge_size);
 
-   printf("%s: cartridge_size=%#06x\n", __func__, cartridge_size);
+   printf("%s: cartridge_type=%d, cartridge_size=%#06x\n", __func__, cartridge_type, cartridge_size);
+
+   //if(cartridge_pokey && !pokey_ram)
+   {
+       //pokey_ram = heap_caps_malloc(0x1000, MALLOC_CAP_SPIRAM);
+       pokey_ram = malloc(0x1000);
+       if (!pokey_ram) abort();
+
+       printf("%s: Allocated pokey RAM.\n", __func__);
+
+       fastmap[0x4] = pokey_ram;
+       fastmap[0x5] = pokey_ram;
+       fastmap[0x6] = pokey_ram;
+       fastmap[0x7] = pokey_ram;
+       fastmap[0x8] = pokey_ram;
+       fastmap[0x9] = pokey_ram;
+       fastmap[0xa] = pokey_ram;
+       fastmap[0xb] = pokey_ram;
+       fastmap[0xc] = pokey_ram;
+       fastmap[0xd] = pokey_ram;
+       fastmap[0xe] = pokey_ram;
+       fastmap[0xf] = pokey_ram;
+   }
 
    return true;
 }
