@@ -37,7 +37,10 @@
 uint8_t memory_ram[MEMORY_SIZE] = {0};
 //uint8_t* memory_rom; //[MEMORY_SIZE] = {0};
 uint8_t* fastmap[16];
+uint8_t* cartRAM;
 
+#define MEM_READ(address) (fastmap[(address) >> 12][(address) & 0xfff])
+#define MEM_WRITE(address, data) { fastmap[(address) >> 12][(address) & 0xfff] = (data); }
 // ----------------------------------------------------------------------------
 // Reset
 // ----------------------------------------------------------------------------
@@ -52,6 +55,12 @@ void memory_Reset(void)
     //     memory_rom = heap_caps_malloc(MEMORY_SIZE, MALLOC_CAP_SPIRAM);
     //     if (!memory_rom) abort();
     // }
+
+    if (!cartRAM)
+    {
+        cartRAM = heap_caps_malloc(16384, MALLOC_CAP_SPIRAM);
+        if (!cartRAM) abort();
+    }
 
    uint32_t index;
    for(index = 0; index < MEMORY_SIZE; index++)
@@ -83,7 +92,7 @@ IRAM_ATTR uint8_t memory_Read(uint16_t address)
          memory_ram[INTFLG] &= 0x7f;
          return memory_ram[INTFLG];
       default:
-         return fastmap[address >> 12][address & 0xfff];
+         return MEM_READ(address);
    }
 
    //return memory_ram[address];
@@ -158,15 +167,23 @@ IRAM_ATTR void memory_Write(uint16_t address, uint8_t data)
             riot_SetTimer(T1024T, data);
             break;
          default:
-            memory_ram[address] = data;
+            MEM_WRITE(address, data);
             if(address >= 8256 && address <= 8447)
-               memory_ram[address - 8192] = data;
+            {
+               MEM_WRITE(address - 8192, data);
+           }
             else if(address >= 8512 && address <= 8702)
-               memory_ram[address - 8192] = data;
+            {
+               MEM_WRITE(address - 8192, data);
+           }
             else if(address >= 64 && address <= 255)
-               memory_ram[address + 8192] = data;
+            {
+               MEM_WRITE(address + 8192, data);
+           }
             else if(address >= 320 && address <= 511)
-               memory_ram[address + 8192] = data;
+            {
+               MEM_WRITE(address + 8192, data);
+           }
             break;
             /*TODO: gdement:  test here for debug port.  Don't put it in the switch because that will change behavior.*/
       }
@@ -189,7 +206,12 @@ void memory_WriteROM(uint16_t address, uint16_t size, const uint8_t* data)
     //      memory_ram[address + index] = data[index];
     //      //memory_rom[address + index] = 1;
     //   }
-        memcpy(&memory_ram[address], data, size);
+        //memcpy(&memory_ram[address], data, size);
+   }
+
+   for (int i = 0; i < size; i += 0x1000)
+   {
+       fastmap[(address + i) >> 12] = (uint8_t*)(data + i);
    }
 }
 
@@ -207,6 +229,15 @@ void memory_ClearROM(uint16_t address, uint16_t size)
     //      memory_ram[address + index] = 0;
     //      //memory_rom[address + index] = 0;
     //   }
-        memset(&memory_ram[address], 0, size);
+        //memset(&memory_ram[address], 0, size);
+   }
+
+   //cartRAM
+
+   if (size > 16384) abort();
+   
+   for (int i = 0; i < size; i += 0x1000)
+   {
+       fastmap[(address + i) >> 12] = (uint8_t*)(cartRAM + i);
    }
 }
